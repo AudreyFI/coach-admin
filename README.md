@@ -35,13 +35,15 @@ npm install
 
 ## Usage
 
-1. Start the development server:
+1. Add your own users in the USERS array located in the src/models/user.ts
+
+2. Start the development server:
 
 ```bash
 npm run dev
 ```
 
-2. Open your browser and navigate to `http://localhost:3000`.
+3. Open your browser and navigate to `http://localhost:3000`.
 
 ## Contributing
 
@@ -50,7 +52,3 @@ We welcome contributions! Please read our [Contributing Guidelines](CONTRIBUTING
 ## License
 
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
-
-## Usage
-
-Add your own users in the USERS array located in the src/models/user.ts
