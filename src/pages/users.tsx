@@ -17,7 +17,9 @@ const users = () => {
     "Statut",
     "Actions",
   ];
-  const userList = USERS.sort((a, b) => a.firstname.localeCompare(b.firstname));
+  const userList = USERS?.sort((a, b) =>
+    a?.firstname.localeCompare(b?.firstname)
+  );
 
   const [userData, setUserData] = useState<User[]>(userList);
   const [showDeleteModal, setShowDeleteModal] = useState(false);

@@ -35,7 +35,7 @@ npm install
 
 ## Usage
 
-1. Add your own users in the USERS array located in the src/models/user.ts
+1. Add your own users in the USERS array in the .env file
 
 2. Start the development server:
 

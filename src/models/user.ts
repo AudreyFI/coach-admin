@@ -4,4 +4,4 @@ export type User = {
   lastname: string;
   email?: string;
 };
-export const USERS: User[] = [];
+export const USERS: User[] = JSON.parse(import.meta.env.VITE_USERS);
