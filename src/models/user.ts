@@ -1,5 +1,6 @@
-import { USERS_LIST } from "../data/users";
-import { PUBLIC_USERS_LIST } from "../mock/users.mock";
+const USERS = await import(`../${import.meta.env.VITE_MOCK_USERS_FILE}`).then(
+  (module) => module.USERS
+);
 import { Subscription } from "./subscription";
 
 export type User = {
@@ -10,5 +11,4 @@ export type User = {
   subscriptions?: Subscription[];
 };
 
-export const USERS: User[] =
-  import.meta.env.VITE_ENV === "local" ? USERS_LIST : PUBLIC_USERS_LIST;
+export { USERS };

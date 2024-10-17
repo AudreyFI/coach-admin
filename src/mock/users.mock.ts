@@ -1,6 +1,6 @@
 import { User } from "../models/user";
 
-export const PUBLIC_USERS_LIST: User[] = [
+export const USERS: User[] = [
   {
     id: 1,
     firstname: "Firstname",
