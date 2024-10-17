@@ -1,7 +1,28 @@
 export type Action<T> =
-  | { name: "Edit"; fn: () => void; stateFn: (item: T) => void }
-  | { name: "Pay"; fn: () => void; stateFn: (item: T) => void }
-  | { name: "Delete"; fn: () => void; stateFn: (item: T) => void };
+  | {
+      name: "Edit";
+      fn: () => void;
+      stateFn: (item: T) => void;
+      displayFn: (item: T) => boolean;
+    }
+  | {
+      name: "Delete";
+      fn: () => void;
+      stateFn: (item: T) => void;
+      displayFn: (item: T) => boolean;
+    }
+  | {
+      name: "Pay";
+      fn: () => void;
+      stateFn: (item: T) => void;
+      displayFn: (item: T) => boolean;
+    }
+  | {
+      name: "New";
+      fn: () => void;
+      stateFn: (item: T) => void;
+      displayFn: (item: T) => boolean;
+    };
 
 export type TableActionProps<T> = {
   action: Action<T>;
@@ -23,7 +44,13 @@ const TableAction = <T,>({ action, item }: TableActionProps<T>) => {
           </svg>
         );
       case "Pay":
-        return <span className="font-bold text-xl">$</span>;
+        return (
+          <>
+            {action.displayFn(item) && (
+              <span className="font-bold text-xl">$</span>
+            )}
+          </>
+        );
       case "Delete":
         return (
           <svg
