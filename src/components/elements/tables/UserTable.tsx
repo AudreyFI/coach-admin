@@ -4,12 +4,19 @@ import Table from "../Table";
 import TableAction, { Action } from "../TableAction";
 
 export type TableProps<User> = {
-  columns: string[];
   data: User[];
   actions?: Action<User>[];
 };
 
-const UserTable = ({ columns, data, actions }: TableProps<User>) => {
+const UserTable = ({ data, actions }: TableProps<User>) => {
+  const columns = [
+    "Prénom",
+    "Nom",
+    "Email",
+    "Date de fin",
+    "Statut",
+    "Actions",
+  ];
   const tbody = (
     <>
       {data.map((user: User) => (
@@ -20,7 +27,11 @@ const UserTable = ({ columns, data, actions }: TableProps<User>) => {
           <td className="px-4 py-3 text-sm">
             {user.subscriptions?.[0]?.endDate && (
               <span>
-                {user.subscriptions?.[0]?.endDate.toLocaleDateString()}
+                {user.subscriptions?.[0]?.endDate.toLocaleString("fr-FR", {
+                  year: "numeric",
+                  month: "numeric",
+                  day: "numeric",
+                })}
               </span>
             )}
           </td>

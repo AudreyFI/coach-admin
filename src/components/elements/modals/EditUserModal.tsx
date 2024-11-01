@@ -65,7 +65,7 @@ const EditUserModal = ({ hideModal, submit, user }: EditUserModalProps) => {
               />
               {errors.email && <span>{REQUIRED_FIELD}</span>}
             </label>
-            {user.subscriptions?.length && (
+            {!!user.subscriptions?.length && (
               <label
                 htmlFor="subscriptionEndDate"
                 className="block text-sm pt-5"
@@ -77,6 +77,7 @@ const EditUserModal = ({ hideModal, submit, user }: EditUserModalProps) => {
                   selected={selectedDate}
                   onSelect={setSelectedDate}
                   {...register(`subscriptions.0.endDate`)}
+                  ref={null} // This is a workaround for a bug in react-day-picker with register
                 />
               </label>
             )}

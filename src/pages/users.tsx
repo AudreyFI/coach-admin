@@ -1,58 +1,56 @@
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import Button from "../components/elements/Button";
 import Input from "../components/elements/Input";
 import DeleteUserModal from "../components/elements/modals/DeleteUserModal";
 import EditUserModal from "../components/elements/modals/EditUserModal";
 import PayUserModal from "../components/elements/modals/PayUserModal";
 import SubscriptionModal from "../components/elements/modals/SubscriptionModal";
-import { Action } from "../components/elements/TableAction";
+import { Action, ActionType } from "../components/elements/TableAction";
 import UserTable from "../components/elements/tables/UserTable";
-import { User, USERS } from "../models/user";
+import { User } from "../models/user";
+import { getUsers, updateUser } from "../services/user.service";
 
 const users = () => {
-  const columns = [
-    "Prénom",
-    "Nom",
-    "Email",
-    "Date de fin",
-    "Statut",
-    "Actions",
-  ];
-  const userList = USERS?.sort((a, b) =>
-    a?.firstname.localeCompare(b?.firstname)
-  )?.map((u) => {
-    u.subscriptions?.sort((a, b) => (a.endDate > b.endDate ? 1 : -1));
-    return u;
-  });
-  const [userData, setUserData] = useState<User[]>(userList);
+  const [userData, setUserData] = useState<User[]>([]);
+  const [filteredUserData, setFilteredUserData] = useState<User[]>([]);
+  const [searchTerm, setSearchTerm] = useState<string>();
   const [currentUser, setCurrentUser] = useState<User>();
   const [showEditModal, setShowEditModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showPayModal, setShowPayModal] = useState(false);
   const [showNewSubModal, setShowNewSubModal] = useState(false);
 
+  useEffect(() => {
+    const fetchUsers = async () => {
+      const userList: User[] = await getUsers();
+      setUserData(userList);
+      setUserDataWithSearchField([...userList]);
+    };
+    fetchUsers();
+  }, [showEditModal]);
+
   const tableActions: Action<User>[] = [
     {
-      name: "Edit",
+      name: ActionType.EDIT,
       fn: () => setShowEditModal(true),
       stateFn: (user: User) => setCurrentUser(user),
       displayFn: (user: User) => !!user,
     },
     {
-      name: "Delete",
+      name: ActionType.DELETE,
       fn: () => setShowDeleteModal(true),
       stateFn: (user: User) => setCurrentUser(user),
       displayFn: (user: User) => !!user,
     },
     {
-      name: "Pay",
+      name: ActionType.PAY,
       fn: () => setShowPayModal(true),
       stateFn: (user: User) => setCurrentUser(user),
       displayFn: (user: User) =>
         !!user.subscriptions?.length && !user.subscriptions[0].paymentDate,
     },
     {
-      name: "New",
+      name: ActionType.NEW,
       fn: () => setShowNewSubModal(true),
       stateFn: (user: User) => setCurrentUser(user),
       displayFn: (user: User) => !!user,
@@ -61,12 +59,8 @@ const users = () => {
 
   const onSearch = (e: ChangeEvent<HTMLInputElement>) => {
     const search = e.target.value?.toLowerCase();
-    const filteredData = [...userList].filter(
-      (user) =>
-        user.firstname.toLowerCase().includes(search) ||
-        user.lastname?.toLowerCase().includes(search)
-    );
-    setUserData(filteredData);
+    setSearchTerm(search);
+    setUserDataWithSearchField([...userData], search);
   };
 
   const submitDeleteUserModal = () => {
@@ -77,15 +71,20 @@ const users = () => {
     setUserData(filteredData);
   };
 
-  const submitEditUserModal = (data: User) => {
+  const setUserDataWithSearchField = (users: User[], search = searchTerm) => {
+    const filteredData = !search
+      ? users
+      : users.filter(
+          (user) =>
+            user.firstname.toLowerCase().includes(search) ||
+            user.lastname?.toLowerCase().includes(search)
+        );
+    setFilteredUserData(filteredData);
+  };
+
+  const submitEditUserModal = async (data: User) => {
+    await updateUser(data);
     setShowEditModal(false);
-    const updatedUsers = userData.map((user) => {
-      if (user.id === data.id) {
-        return data;
-      }
-      return user;
-    });
-    setUserData(updatedUsers);
   };
 
   return (
@@ -99,7 +98,7 @@ const users = () => {
         </div>
       </div>
       <div className="h-full w-full object-cover">
-        <UserTable data={userData} actions={tableActions} columns={columns} />
+        <UserTable data={filteredUserData} actions={tableActions} />
       </div>
 
       {showEditModal && (

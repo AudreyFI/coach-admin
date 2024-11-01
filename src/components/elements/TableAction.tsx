@@ -1,24 +1,24 @@
 export type Action<T> =
   | {
-      name: "Edit";
+      name: ActionType.EDIT;
       fn: () => void;
       stateFn: (item: T) => void;
       displayFn: (item: T) => boolean;
     }
   | {
-      name: "Delete";
+      name: ActionType.DELETE;
       fn: () => void;
       stateFn: (item: T) => void;
       displayFn: (item: T) => boolean;
     }
   | {
-      name: "Pay";
+      name: ActionType.PAY;
       fn: () => void;
       stateFn: (item: T) => void;
       displayFn: (item: T) => boolean;
     }
   | {
-      name: "New";
+      name: ActionType.NEW;
       fn: () => void;
       stateFn: (item: T) => void;
       displayFn: (item: T) => boolean;
@@ -28,6 +28,13 @@ export type TableActionProps<T> = {
   action: Action<T>;
   item: T;
 };
+
+export enum ActionType {
+  EDIT = "Edit",
+  DELETE = "Delete",
+  PAY = "Pay",
+  NEW = "New",
+}
 
 const TableAction = <T,>({ action, item }: TableActionProps<T>) => {
   const getActionIcon = () => {
