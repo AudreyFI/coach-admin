@@ -1,39 +1,34 @@
-import { useState } from "react";
-import { DayPicker } from "react-day-picker";
 import "react-day-picker/style.css";
 import { useForm } from "react-hook-form";
-import { User } from "../../../models/user";
+import { Member } from "../../../models/member";
 import Modal, { ModalProps } from "../Modal";
 
-export type EditUserModalProps = {
+export type EditMemberModalProps = {
   hideModal: () => void;
   submit: (formdata: any) => void;
-  user: User | undefined;
+  member: Member | undefined;
 };
 
-const EditUserModal = ({ hideModal, submit, user }: EditUserModalProps) => {
+const EditMemberModal = ({
+  hideModal,
+  submit,
+  member,
+}: EditMemberModalProps) => {
   const REQUIRED_FIELD = "This field is required";
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<User>();
-  const [selectedDate, setSelectedDate] = useState<Date | undefined>(
-    user!.subscriptions?.[0]?.endDate
-  );
+  } = useForm<Member>();
 
-  const onSubmit = handleSubmit((formdata: User) => {
-    if (selectedDate) {
-      formdata.subscriptions![0].endDate = selectedDate;
-    }
-
-    submit({ ...user, ...formdata });
+  const onSubmit = handleSubmit((formdata: Member) => {
+    submit({ ...member, ...formdata });
   });
 
   const content = (
     <>
       <p>Mettre à jour l'utilisateur </p>
-      {user && (
+      {member && (
         <form>
           <div className="px-4 py-5 mb-8 bg-white rounded-lg shadow-md">
             <label htmlFor="firstname" className="block text-sm">
@@ -41,7 +36,7 @@ const EditUserModal = ({ hideModal, submit, user }: EditUserModalProps) => {
               <input
                 className="block w-full mt-1 text-sm  focus:border-purple-400 focus:outline-none focus:shadow-outline-purple form-input"
                 placeholder="Jane"
-                defaultValue={user.firstname}
+                defaultValue={member.firstname}
                 {...register("firstname", { required: true })}
               />
               {errors.firstname && <span>{REQUIRED_FIELD}</span>}
@@ -51,7 +46,7 @@ const EditUserModal = ({ hideModal, submit, user }: EditUserModalProps) => {
               <input
                 className="block w-full mt-1 text-sm  focus:border-purple-400 focus:outline-none focus:shadow-outline-purple form-input"
                 placeholder="Doe"
-                defaultValue={user.lastname}
+                defaultValue={member.lastname}
                 {...register("lastname")}
               />
             </label>
@@ -60,27 +55,11 @@ const EditUserModal = ({ hideModal, submit, user }: EditUserModalProps) => {
               <input
                 className="block w-full mt-1 text-sm  focus:border-purple-400 focus:outline-none focus:shadow-outline-purple form-input"
                 placeholder="Jane Doe"
-                defaultValue={user.email}
+                defaultValue={member.email}
                 {...register("email", { required: true })}
               />
               {errors.email && <span>{REQUIRED_FIELD}</span>}
             </label>
-            {!!user.subscriptions?.length && (
-              <label
-                htmlFor="subscriptionEndDate"
-                className="block text-sm pt-5"
-              >
-                <span className="text-gray-500">Date de fin</span>
-                <DayPicker
-                  mode="single"
-                  className="block w-full mt-1 text-sm  focus:border-purple-400 focus:outline-none focus:shadow-outline-purple form-input"
-                  selected={selectedDate}
-                  onSelect={setSelectedDate}
-                  {...register(`subscriptions.0.endDate`)}
-                  ref={null} // This is a workaround for a bug in react-day-picker with register
-                />
-              </label>
-            )}
           </div>
         </form>
       )}
@@ -92,4 +71,4 @@ const EditUserModal = ({ hideModal, submit, user }: EditUserModalProps) => {
   return <Modal props={modalProps} />;
 };
 
-export default EditUserModal;
+export default EditMemberModal;

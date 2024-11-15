@@ -25,4 +25,4 @@ dist-ssr
 
 
 # Mocked personal data
-**/data/*
+**/**/mock/*.private-mock.ts

@@ -1,6 +1,7 @@
 export type Subscription = {
-  id: string;
+  id?: string;
   startDate: Date;
+  type?: SubscriptionType;
   endDate: Date;
   paymentDate?: Date;
   status: SubscriptionStatus;

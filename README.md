@@ -4,22 +4,18 @@ This is a React/Vite project
 
 ## Project Description
 
-Coach Admin is a subscription management system designed to streamline the process of handling user subscriptions for the coach platform.
+Coach Admin is a subscription management system designed to streamline the process of handling member subscriptions for the coach platform.
 
-## Features
+## Features ----- WORK IN PROGRESS -----
 
 - User authentication and authorization
 - Subscription plan management
 - Payment processing integration
-- Admin dashboard for managing users and subscriptions
+- Admin dashboard for managing members and subscriptions
 
 ## Installation
 
 1. Clone the repository:
-
-```bash
-git clone https://github.com/yourusername/coach-admin.git
-```
 
 2. Navigate to the project directory:
 
@@ -35,7 +31,8 @@ npm install
 
 ## Usage
 
-1. Add your own users in the USERS array in the .env file
+1. Add your own members in the MEMBERS array in the .env file
+   This project contains an implementation of mock repositories but you can switch to an api implementation with the help of the repositories/dependencies.ts file. This file is injected when calling the services so you can easily switch between mocks and api.
 
 2. Start the development server:
 
@@ -43,7 +40,7 @@ npm install
 npm run dev
 ```
 
-3. Open your browser and navigate to `http://localhost:3000`.
+3. Open your browser and navigate to `http://localhost:5173`.
 
 ## Contributing
 

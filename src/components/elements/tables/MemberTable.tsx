@@ -1,14 +1,14 @@
-import { User } from "../../../models/user";
+import { Member } from "../../../models/member";
 import Badge from "../Badge";
 import Table from "../Table";
 import TableAction, { Action } from "../TableAction";
 
-export type TableProps<User> = {
-  data: User[];
-  actions?: Action<User>[];
+export type TableProps<Member> = {
+  data: Member[];
+  actions?: Action<Member>[];
 };
 
-const UserTable = ({ data, actions }: TableProps<User>) => {
+const MemberTable = ({ data, actions }: TableProps<Member>) => {
   const columns = [
     "Prénom",
     "Nom",
@@ -19,15 +19,15 @@ const UserTable = ({ data, actions }: TableProps<User>) => {
   ];
   const tbody = (
     <>
-      {data.map((user: User) => (
-        <tr className="text-gray-700" key={user.id}>
-          <td className="px-4 py-3 text-sm">{user.firstname}</td>
-          <td className="px-4 py-3 text-sm">{user.lastname}</td>
-          <td className="px-4 py-3 text-sm">{user.email}</td>
+      {data.map((member: Member) => (
+        <tr className="text-gray-700" key={member.id}>
+          <td className="px-4 py-3 text-sm">{member.firstname}</td>
+          <td className="px-4 py-3 text-sm">{member.lastname}</td>
+          <td className="px-4 py-3 text-sm">{member.email}</td>
           <td className="px-4 py-3 text-sm">
-            {user.subscriptions?.[0]?.endDate && (
+            {member.subscriptions?.[0]?.endDate && (
               <span>
-                {user.subscriptions?.[0]?.endDate.toLocaleString("fr-FR", {
+                {member.subscriptions?.[0]?.endDate.toLocaleString("fr-FR", {
                   year: "numeric",
                   month: "numeric",
                   day: "numeric",
@@ -36,8 +36,8 @@ const UserTable = ({ data, actions }: TableProps<User>) => {
             )}
           </td>
           <td className="px-4 py-3 text-sm">
-            {user.subscriptions?.[0]?.status && (
-              <Badge status={user.subscriptions?.[0]?.status} />
+            {member.subscriptions?.[0]?.status && (
+              <Badge status={member.subscriptions?.[0]?.status} />
             )}
           </td>
 
@@ -45,10 +45,10 @@ const UserTable = ({ data, actions }: TableProps<User>) => {
             <td className="px-4 py-3">
               <div className="flex items-center space-x-4 text-sm">
                 {actions.map((action) => (
-                  <TableAction<User>
+                  <TableAction<Member>
                     action={action}
                     key={action.name}
-                    item={user}
+                    item={member}
                   />
                 ))}
               </div>
@@ -61,4 +61,4 @@ const UserTable = ({ data, actions }: TableProps<User>) => {
   return <Table columns={columns} tbody={tbody} />;
 };
 
-export default UserTable;
+export default MemberTable;

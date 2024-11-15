@@ -1,12 +1,12 @@
 import Modal, { ModalProps } from "../Modal";
 
-export type DeleteUserModalProps = {
+export type DeleteModalProps = {
+  content: string;
   hideModal: () => void;
   submit: () => void;
 };
 
-const DeleteUserModal = ({ hideModal, submit }: DeleteUserModalProps) => {
-  const content = "Etes-vous sûr de vouloir supprimer cet utilisateur ?";
+const DeleteModal = ({ content, hideModal, submit }: DeleteModalProps) => {
   const onAbort = () => hideModal();
   const onSubmit = () => submit();
   const modalProps: ModalProps = { content, onAbort, onSubmit };
@@ -14,4 +14,4 @@ const DeleteUserModal = ({ hideModal, submit }: DeleteUserModalProps) => {
   return <Modal props={modalProps} />;
 };
 
-export default DeleteUserModal;
+export default DeleteModal;
