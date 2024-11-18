@@ -1,14 +1,15 @@
 import { ChangeEvent, useEffect, useState } from "react";
 import Button from "../components/elements/Button";
-import Input from "../components/elements/Input";
 import AddSubscriptionModal, {
   SubscriptionForm,
 } from "../components/elements/modals/AddSubscriptionModal";
 import DeleteModal from "../components/elements/modals/DeleteModal";
 import EditMemberModal from "../components/elements/modals/EditMemberModal";
 import PayMemberModal from "../components/elements/modals/PayMemberModal";
+import Search from "../components/elements/Search";
 import { Action, ActionType } from "../components/elements/TableAction";
 import MemberTable from "../components/elements/tables/MemberTable";
+import { CustomerSubscription } from "../models/customer-subscription";
 import { Member } from "../models/member";
 import { dependencies } from "../repositories/dependencies";
 import {
@@ -17,11 +18,12 @@ import {
   deleteSubscription,
   getMembers,
   updateMember,
+  updateSubscription,
 } from "../services/member.service";
 
 const Members = () => {
   const [memberData, setMemberData] = useState<Member[]>([]);
-  const [filteredMemberData, setFilteredmemberData] = useState<Member[]>([]);
+  const [filteredMemberData, setFilteredMemberData] = useState<Member[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>();
   const [currentMember, setCurrentMember] = useState<Member>();
   const [showEditModal, setShowEditModal] = useState(false);
@@ -31,7 +33,6 @@ const Members = () => {
     useState(false);
   const [showDeleteSubscriptionModal, setShowDeleteSubscriptionModal] =
     useState(false);
-  const [showNewSubModal, setShowNewSubModal] = useState(false);
 
   useEffect(() => {
     const fetchMembers = async () => {
@@ -40,7 +41,14 @@ const Members = () => {
       setMemberDataWithSearchField([...memberList]);
     };
     fetchMembers();
-  }, [showEditModal, showDeleteModal, showAddSubscriptionModal]);
+  }, [
+    setCurrentMember,
+    showEditModal,
+    showDeleteModal,
+    showPayModal,
+    showAddSubscriptionModal,
+    showDeleteSubscriptionModal,
+  ]);
 
   const tableActions: Action<Member>[] = [
     {
@@ -102,10 +110,15 @@ const Members = () => {
             member.firstname.toLowerCase().includes(search) ||
             member.lastname?.toLowerCase().includes(search)
         );
-    setFilteredmemberData(filteredData);
+    setFilteredMemberData(filteredData);
   };
 
-  const submitDeletememberModal = async () => {
+  const showNewMemberModal = () => {
+    setCurrentMember(undefined);
+    setShowEditModal(true);
+  };
+
+  const submitDeleteMemberModal = async () => {
     if (!currentMember?.id) return;
     await deleteMember(dependencies)(currentMember.id);
     setShowDeleteModal(false);
@@ -113,29 +126,35 @@ const Members = () => {
 
   const updateMemberModal = async (data: Member) => {
     await updateMember(dependencies)(data);
+    setShowEditModal(false);
   };
 
   const addMemberSubscriptionModal = async (data: SubscriptionForm) => {
-    if (!currentMember) return;
-    await addSubscription(dependencies)(currentMember, data);
+    if (!currentMember?.id) return;
+    await addSubscription(dependencies)(currentMember.id, data);
+    setShowAddSubscriptionModal(false);
+  };
+
+  const updateMemberSubscriptionModal = async (data: CustomerSubscription) => {
+    await updateSubscription(dependencies)(data);
+    setShowPayModal(false);
   };
 
   const submitDeleteSubscriptionModal = async () => {
-    if (!currentMember) return;
-    await deleteSubscription(dependencies)(currentMember);
+    if (!currentMember?.id || !currentMember.subscriptions?.[0]?.id) return;
+    await deleteSubscription(dependencies)(
+      currentMember.id,
+      currentMember.subscriptions[0].id
+    );
     setShowDeleteSubscriptionModal(false);
   };
 
+  const additionalAction = <Button name="+" onClick={showNewMemberModal} />;
+
   return (
     <>
-      <div className="flex pt-10 float-end">
-        <div className="px-4 py-3 mb-8 bg-white rounded-lg shadow-md flex">
-          <Input label="Search" placeholder="Search..." onChange={onSearch} />
-          <span className="h-9 pl-4 flex self-end">
-            <Button name="+" />
-          </span>
-        </div>
-      </div>
+      <Search onSearch={() => onSearch} additionalAction={additionalAction} />
+
       <div className="h-full w-full object-cover">
         <MemberTable data={filteredMemberData} actions={tableActions} />
       </div>
@@ -145,7 +164,6 @@ const Members = () => {
           hideModal={() => setShowEditModal(false)}
           submit={(formdata: Member) => {
             updateMemberModal(formdata);
-            setShowEditModal(false);
           }}
           member={currentMember}
         />
@@ -154,15 +172,14 @@ const Members = () => {
         <DeleteModal
           content="Etes-vous sûr(e) de vouloir supprimer cet utilisateur ?"
           hideModal={() => setShowDeleteModal(false)}
-          submit={() => submitDeletememberModal()}
+          submit={() => submitDeleteMemberModal()}
         />
       )}
       {showPayModal && (
         <PayMemberModal
           hideModal={() => setShowPayModal(false)}
-          submit={(formdata: Member) => {
-            updateMemberModal(formdata);
-            setShowPayModal(false);
+          submit={(formdata: CustomerSubscription) => {
+            updateMemberSubscriptionModal(formdata);
           }}
           member={currentMember}
         />
@@ -172,7 +189,6 @@ const Members = () => {
           hideModal={() => setShowAddSubscriptionModal(false)}
           submit={(formdata: SubscriptionForm) => {
             addMemberSubscriptionModal(formdata);
-            setShowAddSubscriptionModal(false);
           }}
           member={currentMember}
         />

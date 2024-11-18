@@ -5,6 +5,7 @@ export type Subscription = {
   endDate: Date;
   paymentDate?: Date;
   status: SubscriptionStatus;
+  amount?: number;
 };
 
 export type SubscriptionStatus =

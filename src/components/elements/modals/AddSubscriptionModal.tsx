@@ -14,8 +14,8 @@ export type SubscriptionModalProps = {
 };
 
 export type SubscriptionForm = {
-  duration: SubscriptionType;
   startDate: Date;
+  endDate: Date;
 };
 
 const AddSubscriptionModal = ({
@@ -51,7 +51,7 @@ const AddSubscriptionModal = ({
   };
 
   const onSubmit = () => {
-    submit({ duration, startDate });
+    submit({ startDate, endDate });
   };
 
   const content = (

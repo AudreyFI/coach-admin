@@ -1,4 +1,5 @@
 import { SubscriptionForm } from "../../components/elements/modals/AddSubscriptionModal";
+import { CustomerSubscription } from "../../models/customer-subscription";
 import { Member } from "../../models/member";
 import { MemberRepository } from "../member.repository.interface";
 
@@ -15,7 +16,7 @@ export const MemberMockRepository: MemberRepository = {
       }, 1000);
     });
   },
-  getMember: async (id: number): Promise<Member> => {
+  getMember: async (id: string): Promise<Member> => {
     return await new Promise((resolve) => {
       setTimeout(() => {
         resolve(membersList.find((u: Member) => u.id === id));
@@ -25,22 +26,24 @@ export const MemberMockRepository: MemberRepository = {
   updateMember: async (member: Member): Promise<Member> => {
     return await new Promise((resolve) => {
       setTimeout(() => {
-        membersList = membersList.map((u: Member) => {
-          if (u.id === member.id) {
-            u.firstname = member.firstname;
-            u.lastname = member.lastname;
-            u.email = member.email;
-            if (member.subscriptions?.[0]?.endDate && u.subscriptions?.[0]) {
-              u.subscriptions[0].endDate = member.subscriptions[0].endDate;
+        if (!member.id) {
+          member.id = membersList.length + 1;
+          member.subscriptions = [];
+          membersList.push(member);
+        } else {
+          membersList = membersList.map((u: Member) => {
+            if (u.id === member.id) {
+              u = { ...member };
             }
-          }
-          return u;
-        });
+            return u;
+          });
+        }
+
         resolve(member);
       }, 1000);
     });
   },
-  deleteMember: async (id: number): Promise<Member> => {
+  deleteMember: async (id: string): Promise<Member> => {
     return await new Promise((resolve) => {
       setTimeout(() => {
         resolve((membersList = membersList.filter((u: Member) => u.id != id)));
@@ -48,37 +51,55 @@ export const MemberMockRepository: MemberRepository = {
     });
   },
   addSubscription: async (
-    member: Member,
-    subscription: SubscriptionForm,
-    endDate?: Date
-  ): Promise<Member> => {
+    memberId: string,
+    subscription: SubscriptionForm
+  ): Promise<Member[]> => {
     return await new Promise((resolve) => {
       setTimeout(() => {
         membersList = membersList.map((u: Member) => {
-          if (u.id === member.id) {
+          if (u.id === memberId) {
             u.subscriptions?.push({
               id: "sub_" + u.subscriptions.length + 1,
               startDate: subscription.startDate,
-              type: subscription.duration,
-              endDate: endDate || new Date(), // won't be stored
+              endDate: subscription.endDate,
               status: "started",
             });
           }
           return u;
         });
-        console.log("addmemberSubscription", membersList);
-        resolve(member);
+        resolve(membersList);
+      }, 1000);
+    });
+  },
+  updateSubscription: async (
+    subscription: CustomerSubscription
+  ): Promise<Member[]> => {
+    return await new Promise((resolve) => {
+      setTimeout(() => {
+        membersList = membersList.map((u: Member) => {
+          if (u.id === subscription.customerId) {
+            u.subscriptions?.map((s) => {
+              if (s.id === subscription.subscriptionId) {
+                s.amount = subscription.amount;
+                s.paymentDate = subscription.paymentDate;
+              }
+              return s;
+            });
+          }
+          return u;
+        });
+        resolve(membersList);
       }, 1000);
     });
   },
   deleteSubscription: async (
-    member: Member,
-    subscriptionId?: number
-  ): Promise<Member> => {
+    memberId: string,
+    subscriptionId?: string
+  ): Promise<Member[]> => {
     return await new Promise((resolve) => {
       setTimeout(() => {
         membersList = membersList.map((u: Member) => {
-          if (u.id === member.id) {
+          if (u.id === memberId) {
             if (u.subscriptions?.length) {
               u.subscriptions?.shift();
             } else {
@@ -87,8 +108,7 @@ export const MemberMockRepository: MemberRepository = {
           }
           return u;
         });
-        console.log("deleteSubscription", membersList);
-        resolve(member);
+        resolve(membersList);
       }, 1000);
     });
   },
