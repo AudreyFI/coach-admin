@@ -5,7 +5,7 @@ export type TableProps = {
 
 const Table = ({ columns, tbody }: TableProps) => {
   return (
-    <div className="w-full overflow-hidden rounded-lg shadow-xs">
+    <div className="w-full overflow-x-auto rounded-lg shadow-xs">
       <table className="w-full whitespace-no-wrap ">
         <thead>
           <tr className="text-xs font-semibold tracking-wide text-left text-gray-500 uppercase border-b bg-gray-50">

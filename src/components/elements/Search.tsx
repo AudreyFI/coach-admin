@@ -1,7 +1,8 @@
+import { ChangeEvent } from "react";
 import Input from "./Input";
 
 export type SearchProps = {
-  onSearch: () => void;
+  onSearch: (e: ChangeEvent<HTMLInputElement>) => void;
   additionalAction: JSX.Element;
 };
 

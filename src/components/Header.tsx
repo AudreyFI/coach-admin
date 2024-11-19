@@ -9,8 +9,8 @@ const Header = () => {
             to="/"
             className={({ isActive }) =>
               isActive
-                ? "lg:inline-block lg:mt-0 text-gray-300 cursor-default"
-                : "lg:inline-block lg:mt-0 text-white hover:text-white"
+                ? "lg:inline-block lg:mt-0 text-white hover:text-white cursor-default"
+                : "lg:inline-block lg:mt-0 text-gray-300"
             }
           >
             Utilisateurs
@@ -19,8 +19,8 @@ const Header = () => {
             to="/subscriptions"
             className={({ isActive }) =>
               isActive
-                ? "lg:inline-block lg:mt-0 text-gray-300 cursor-default px-8"
-                : "lg:inline-block lg:mt-0 text-white hover:text-white px-8"
+                ? "lg:inline-block lg:mt-0 text-white hover:text-white cursor-default px-8"
+                : "lg:inline-block lg:mt-0 text-gray-300 px-8"
             }
           >
             Abonnements

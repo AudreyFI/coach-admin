@@ -153,7 +153,7 @@ const Members = () => {
 
   return (
     <>
-      <Search onSearch={() => onSearch} additionalAction={additionalAction} />
+      <Search onSearch={onSearch} additionalAction={additionalAction} />
 
       <div className="h-full w-full object-cover">
         <MemberTable data={filteredMemberData} actions={tableActions} />
