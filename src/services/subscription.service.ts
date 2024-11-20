@@ -59,15 +59,20 @@ export const getEndDate = (
   if (!selectedDate) {
     return;
   }
-  const startDate = new Date(selectedDate);
+  const endDate = normalizeDateTimezone(selectedDate);
   if (duration === SubscriptionType.QUARTERLY) {
-    startDate.setMonth(selectedDate.getMonth() + 3);
+    endDate.setMonth(selectedDate.getMonth() + 3);
   } else {
-    startDate.setFullYear(selectedDate.getFullYear() + 1);
+    endDate.setFullYear(selectedDate.getFullYear() + 1);
   }
 
   // Return the day before
-  startDate.setDate(selectedDate.getDate() - 1);
+  endDate.setDate(selectedDate.getDate() - 1);
 
-  return startDate;
+  return endDate;
+};
+
+// Dummy trick to avoid issues with the timezones
+export const normalizeDateTimezone = (date: Date): Date => {
+  return new Date(date.setHours(12));
 };

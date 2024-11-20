@@ -1,5 +1,9 @@
 import { SubscriptionType } from "../models/subscription";
-import { getEndDate, getStartDates } from "./subscription.service";
+import {
+  getEndDate,
+  getStartDates,
+  normalizeDateTimezone,
+} from "./subscription.service";
 
 describe("Subscription Service", () => {
   describe("getStartDates", () => {
@@ -61,15 +65,33 @@ describe("Subscription Service", () => {
 
   describe("getEndDate", () => {
     it("should return end date 3 months later for quarterly subscription", () => {
-      const selectedDate = new Date(2023, 0, 1); // Jan 1, 2023
+      const selectedDate = normalizeDateTimezone(new Date(2023, 0, 1)); // Jan 1, 2023
+      const expectedDate = normalizeDateTimezone(new Date(2023, 2, 31));
       const result = getEndDate(selectedDate, SubscriptionType.QUARTERLY);
-      expect(result).toEqual(new Date(2023, 2, 31)); // Mar 31, 2023
+      expect(result).toEqual(expectedDate); // Mar 31, 2023
     });
 
     it("should return end date 1 year later for yearly subscription", () => {
-      const selectedDate = new Date(2023, 0, 1); // Jan 1, 2023
+      const selectedDate = normalizeDateTimezone(new Date(2023, 0, 1)); // Jan 1, 2023
+      const expectedDate = normalizeDateTimezone(new Date(2023, 11, 31));
       const result = getEndDate(selectedDate, SubscriptionType.YEARLY);
-      expect(result).toEqual(new Date(2023, 11, 31)); // Dec 31, 2024
+      expect(result).toEqual(expectedDate); // Dec 31, 2024
+    });
+  });
+
+  describe("normalizeDateTimezone", () => {
+    it("should set the hours to 12", () => {
+      const date = new Date(2023, 0, 1, 0, 0, 0); // Jan 1, 2023, 00:00:00
+      const normalizedDate = normalizeDateTimezone(date);
+      expect(normalizedDate.getHours()).toBe(12);
+    });
+
+    it("should not change the date", () => {
+      const date = new Date(2023, 0, 1, 0, 0, 0); // Jan 1, 2023, 00:00:00
+      const normalizedDate = normalizeDateTimezone(date);
+      expect(normalizedDate.getFullYear()).toBe(2023);
+      expect(normalizedDate.getMonth()).toBe(0);
+      expect(normalizedDate.getDate()).toBe(1);
     });
   });
 });

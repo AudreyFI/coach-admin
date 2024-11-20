@@ -4,12 +4,13 @@ import { SubscriptionType } from "../../../models/subscription";
 import {
   getEndDate,
   getStartDates,
+  normalizeDateTimezone,
 } from "../../../services/subscription.service";
 import Modal, { ModalProps } from "../Modal";
 
 export type SubscriptionModalProps = {
   hideModal: () => void;
-  submit: (formdata: any) => void;
+  submit: (formdata: SubscriptionForm) => void;
   member: Member | undefined;
 };
 
@@ -51,7 +52,8 @@ const AddSubscriptionModal = ({
   };
 
   const onSubmit = () => {
-    submit({ startDate, endDate });
+    const begin = normalizeDateTimezone(startDate);
+    submit({ startDate: begin, endDate: endDate as Date });
   };
 
   const content = (
