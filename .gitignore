@@ -26,3 +26,7 @@ dist-ssr
 
 # Mocked personal data
 **/**/mock/*.private-mock.ts
+
+
+# Internal files
+build*.zip

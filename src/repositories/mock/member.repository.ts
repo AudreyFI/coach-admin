@@ -92,10 +92,7 @@ export const MemberMockRepository: MemberRepository = {
       }, 1000);
     });
   },
-  deleteSubscription: async (
-    memberId: string,
-    subscriptionId?: string
-  ): Promise<Member[]> => {
+  deleteSubscription: async (memberId: string): Promise<Member[]> => {
     return await new Promise((resolve) => {
       setTimeout(() => {
         membersList = membersList.map((u: Member) => {
